@@ -2,9 +2,11 @@ use bevy::{
 	prelude::*,
 	window::WindowResolution,
 };
+use bevy_rapier2d::prelude::*;
 
 use bevy_platformer::{
 	// hello::HelloPlugin,
+	movement::MovementPlugin,
 	platform::PlatformPlugin,
 };
 
@@ -27,7 +29,10 @@ fn main() {
 				..Default::default()
 			}),
 			// HelloPlugin,
-			PlatformPlugin
+			RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(200.0), // Physics plugin
+			RapierDebugRenderPlugin::default(), // Debug plugin
+			PlatformPlugin,
+			MovementPlugin,
 		))
 		.run();
 }
