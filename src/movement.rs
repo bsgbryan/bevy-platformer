@@ -4,8 +4,8 @@ use bevy::{
 };
 use bevy_rapier2d::prelude::*;
 
-const PLAYER_VELOCITY_X: f32 = 400.0;
-const PLAYER_VELOCITY_Y: f32 = 850.0;
+const PLAYER_VELOCITY_X: f32 = 250.0;
+const PLAYER_VELOCITY_Y: f32 = 600.0;
 
 const MAX_JUMP_HEIGHT: f32 = 230.0;
 
