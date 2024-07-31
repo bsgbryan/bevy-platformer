@@ -1,18 +1,13 @@
-use bevy::{
-	prelude::*,
-	sprite::MaterialMesh2dBundle,
-};
+use bevy::prelude::*;
 
 use bevy_rapier2d::prelude::*;
 
 const WINDOW_WIDTH: f32 = 1024.0;
 const WINDOW_HEIGHT: f32 = 720.0;
 const WINDOW_BOTTOM_Y: f32 = WINDOW_HEIGHT / -2.0;
-const WINDOW_LEFT_X: f32 = WINDOW_WIDTH / -2.0;
 
 const COLOR_FLOOR: Color = Color::srgb(0.45, 0.55, 0.66);
 const COLOR_PLATFORM: Color = Color::srgb(0.29, 0.31, 0.41);
-const COLOR_PLAYER: Color = Color::srgb(0.60, 0.55, 0.60);
 
 const FLOOR_THICKNESS: f32 = 10.0;
 
@@ -32,7 +27,7 @@ impl PlatformBundle {
 					..Default::default()
 				},
 				transform: Transform {
-					translation: Vec3::new(x, WINDOW_BOTTOM_Y + (scale.y / 2.0), 0.0),
+					translation: Vec3::new(x, WINDOW_BOTTOM_Y + (scale.y / 2.0) + FLOOR_THICKNESS, 0.0),
 					scale,
 					..Default::default()
 				},
@@ -46,11 +41,7 @@ impl PlatformBundle {
 
 pub struct PlatformPlugin;
 
-fn foo(
-	mut commands: Commands,
-	mut meshes: ResMut<Assets<Mesh>>,
-	mut materials: ResMut<Assets<ColorMaterial>>,
-) {
+fn foo(mut commands: Commands) {
 	commands.spawn(PlatformBundle::new(-100.0, Vec3::new(75.0, 200.0, 1.0)));
 	commands.spawn(PlatformBundle::new(100.0, Vec3::new(50.0, 350.0, 1.0)));
 	commands.spawn(PlatformBundle::new(350.0, Vec3::new(150.0, 250.0, 1.0)));
@@ -70,23 +61,6 @@ fn foo(
 		})
 		.insert(RigidBody::Fixed)
 		.insert(Collider::cuboid(0.5, 0.5));
-
-	commands.spawn(Camera2dBundle::default());
-
-	commands
-		.spawn(MaterialMesh2dBundle {
-			mesh: meshes.add(Circle::default()).into(),
-			material: materials.add(ColorMaterial::from(COLOR_PLAYER)),
-			transform: Transform {
-				translation: Vec3::new(WINDOW_LEFT_X + 100.0, WINDOW_BOTTOM_Y + 25.0, 0.0),
-				scale: Vec3::new(30.0, 30.0, 1.0),
-				..Default::default()
-			},
-			..default()
-		})
-		.insert(RigidBody::KinematicPositionBased)
-		.insert(Collider::ball(0.5))
-		.insert(KinematicCharacterController::default());
 }
 
 impl Plugin for PlatformPlugin {
