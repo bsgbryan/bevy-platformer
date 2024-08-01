@@ -36,7 +36,7 @@ fn main() {
 				.set(ImagePlugin::default_nearest()),
 			// HelloPlugin,
 			RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(16.0), // Physics plugin
-			// RapierDebugRenderPlugin::default(), // Debug plugin
+			RapierDebugRenderPlugin::default(), // Debug plugin
 			CameraPlugin,
 			AnimationPlugin,
 			PlayerPlugin,

@@ -2,11 +2,6 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use crate::animation::AnimationTimer;
 
-const WINDOW_WIDTH: f32 = 1024.0;
-const WINDOW_HEIGHT: f32 = 720.0;
-const WINDOW_BOTTOM_Y: f32 = WINDOW_HEIGHT / -2.0;
-const WINDOW_LEFT_X: f32 = WINDOW_WIDTH / -2.0;
-
 #[derive(Component)]
 pub struct Player;
 
@@ -50,7 +45,7 @@ fn init(
 			Player,
 			SpriteBundle {
 				transform: Transform {
-					translation: Vec3::new(WINDOW_LEFT_X + 100.0, WINDOW_BOTTOM_Y + 80.0, 0.0),
+					translation: Vec3::new(0.0, 60.0, 0.0),
 					scale: Vec3::new(4.0, 4.0, 1.0),
 					..Default::default()
 				},

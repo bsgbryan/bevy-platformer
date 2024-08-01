@@ -82,11 +82,11 @@ fn movement(
 
 	let mut movement = 0.0;
 
-	if input.pressed(KeyCode::ArrowRight) {
+	if input.pressed(KeyCode::ArrowRight) || input.pressed(KeyCode::KeyD) {
 		movement += time.delta_seconds() * PLAYER_VELOCITY_X;
 	}
 
-	if input.pressed(KeyCode::ArrowLeft) {
+	if input.pressed(KeyCode::ArrowLeft) || input.pressed(KeyCode::KeyA) {
 		movement += time.delta_seconds() * PLAYER_VELOCITY_X * -1.0;
 	}
 

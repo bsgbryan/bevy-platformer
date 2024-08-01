@@ -1,70 +1,89 @@
 use bevy::prelude::*;
-
 use bevy_rapier2d::prelude::*;
 
-const WINDOW_WIDTH: f32 = 1024.0;
-const WINDOW_HEIGHT: f32 = 720.0;
-const WINDOW_BOTTOM_Y: f32 = WINDOW_HEIGHT / -2.0;
-
-const COLOR_FLOOR: Color = Color::srgb(0.45, 0.55, 0.66);
 const COLOR_PLATFORM: Color = Color::srgb(0.29, 0.31, 0.41);
-
-const FLOOR_THICKNESS: f32 = 10.0;
 
 #[derive(Bundle)]
 struct PlatformBundle {
-	sprite_bundle: SpriteBundle,
+	atlas: TextureAtlas,
 	body: RigidBody,
 	collider: Collider,
+	sprite_bundle: SpriteBundle,
 }
 
 impl PlatformBundle {
-	fn new(x: f32, scale: Vec3) -> Self {
+	fn new(
+		position: Vec2,
+		index: usize,
+		asset_server: &Res<AssetServer>,
+		texture_atlas_layouts: &mut ResMut<Assets<TextureAtlasLayout>>,
+	) -> Self {
+		let texture = asset_server.load("spritesheets/tiles.png");
+		let layout = TextureAtlasLayout::from_grid(
+			UVec2::splat(16),
+			20,
+			20,
+			None,
+			None,
+		);
+		let texture_atlas_layout = texture_atlas_layouts.add(layout);
+
 		Self {
+			atlas: TextureAtlas {
+				index,
+				layout: texture_atlas_layout,
+			},
+			body: RigidBody::Fixed,
+			collider: Collider::cuboid(8.0, 8.0),
 			sprite_bundle: SpriteBundle {
 				sprite: Sprite {
 					color: COLOR_PLATFORM,
 					..Default::default()
 				},
+				texture,
 				transform: Transform {
-					translation: Vec3::new(x, WINDOW_BOTTOM_Y + (scale.y / 2.0) + FLOOR_THICKNESS, 0.0),
-					scale,
+					scale: Vec3::new(4.0, 4.0, 1.0),
+					translation: Vec3::new(position.x * 4.0, position.y, 0.0),
 					..Default::default()
 				},
 				..Default::default()
 			},
-			body: RigidBody::Fixed,
-			collider: Collider::cuboid(0.5, 0.5),
 		}
 	}
 }
 
 pub struct PlatformPlugin;
 
-fn foo(mut commands: Commands) {
-	commands.spawn(PlatformBundle::new(-100.0, Vec3::new(75.0, 200.0, 1.0)));
-	commands.spawn(PlatformBundle::new(100.0, Vec3::new(50.0, 350.0, 1.0)));
-	commands.spawn(PlatformBundle::new(350.0, Vec3::new(150.0, 250.0, 1.0)));
-
+fn init(
+	mut commands: Commands,
+	asset_server: Res<AssetServer>,
+	mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+) {
 	commands
-		.spawn(SpriteBundle {
-			sprite: Sprite {
-				color: COLOR_FLOOR,
-				..Default::default()
-			},
-			transform: Transform {
-				translation: Vec3::new(0.0, WINDOW_BOTTOM_Y + (FLOOR_THICKNESS / 2.0), 0.0),
-				scale: Vec3::new(WINDOW_WIDTH, FLOOR_THICKNESS, 1.0),
-				..Default::default()
-			},
-			..Default::default()
-		})
-		.insert(RigidBody::Fixed)
-		.insert(Collider::cuboid(0.5, 0.5));
+		.spawn(PlatformBundle::new(
+			Vec2::new(0.0, 0.0),
+			103,
+			&asset_server,
+			&mut texture_atlas_layouts,
+		));
+	commands
+		.spawn(PlatformBundle::new(
+			Vec2::new(16.0, 0.0),
+			103,
+			&asset_server,
+			&mut texture_atlas_layouts,
+		));
+	commands
+		.spawn(PlatformBundle::new(
+			Vec2::new(32.0, 0.0),
+			103,
+			&asset_server,
+			&mut texture_atlas_layouts,
+		));
 }
 
 impl Plugin for PlatformPlugin {
 	fn build(&self, app: &mut App) {
-		app.add_systems(Startup, foo);
+		app.add_systems(Startup, init);
 	}
 }
