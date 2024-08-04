@@ -62,7 +62,7 @@ fn gamepad_connections(
 	mut evr_gamepad: EventReader<GamepadEvent>,
 ) {
 	for ev in evr_gamepad.read() {
-		let GamepadEvent::Connection(e) = ev else { continue; };
+		let GamepadEvent::Connection(e) = ev else { continue };
 
 		match &e.connection {
 			GamepadConnection::Connected(_) => input.mode = InputMode::Gamepad,
