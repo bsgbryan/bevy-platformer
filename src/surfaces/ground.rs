@@ -79,9 +79,10 @@ impl GroundBundle {
 					translation: Vec3::new(position.x, position.y, 0.),
 					..Default::default()
 				}),
-				Collider::cuboid(
-					size.x as f32 * SCALE * 0.5 - 4.,
-					size.y as f32 * SCALE * 0.5 - 4.,
+				Collider::round_cuboid(
+					size.x as f32 * SCALE * 0.5 - 4. - 32.,
+					size.y as f32 * SCALE * 0.5 - 4. - 32.,
+					32.
 				),
 			))
 			.with_children(|parent| {

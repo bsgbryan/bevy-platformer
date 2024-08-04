@@ -63,7 +63,7 @@ fn init(
 			AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
 		))
 		.insert(RigidBody::KinematicPositionBased)
-		.insert(Collider::cuboid(6.0, 5.0))
+		.insert(Collider::round_cuboid(6.0, 5.0, 4.))
 		.insert(KinematicCharacterController::default())
 		.insert(Direction::Right);
 }
