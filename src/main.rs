@@ -5,7 +5,6 @@ use bevy::{
 use bevy_rapier2d::prelude::*;
 
 use bevy_platformer::{
-	// hello::HelloPlugin,
 	animation::AnimationPlugin,
 	camera::CameraPlugin,
 	input::InputPlugin,
