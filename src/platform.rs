@@ -36,7 +36,7 @@ fn genenerate_ground(
 	mut edge: ResMut<WorldEdge>,
 	query: Query<&Transform, With<Player>>
 ) {
-	let transform = query.single();
+	let Ok(transform) = query.get_single() else { return };
 	let t = transform.translation.xy();
 
 	if t.x > edge.east {

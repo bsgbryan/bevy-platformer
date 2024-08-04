@@ -19,27 +19,25 @@ fn jump(
 		(With<KinematicCharacterController>, Without<Jump>),
 	>,
 ) {
-	if query.is_empty() {
-		return;
-	}
-
-	let (player, output) = query.single();
+	let Ok((player, output)) = query.get_single() else { return };
 
 	if input.is_jumping() && output.grounded {
-		commands.entity(player).insert(Jump(0.0));
+		commands
+			.entity(player)
+			.insert(Jump(0.0));
 	}
 }
 
 fn rise(
 	mut commands: Commands,
 	time: Res<Time>,
-	mut query: Query<(Entity, &mut KinematicCharacterController, &mut Jump)>,
+	mut query: Query<(
+		Entity,
+		&mut KinematicCharacterController,
+		&mut Jump,
+	)>,
 ) {
-	if query.is_empty() {
-		return;
-	}
-
-	let (entity, mut player, mut jump) = query.single_mut();
+	let Ok((entity, mut player, mut jump)) = query.get_single_mut() else { return };
 
 	let mut movement = time.delta().as_secs_f32() * PLAYER_VELOCITY_Y;
 
@@ -57,13 +55,8 @@ fn rise(
 }
 
 fn fall(time: Res<Time>, mut query: Query<&mut KinematicCharacterController, Without<Jump>>) {
-	if query.is_empty() {
-		return;
-	}
+	let Ok(mut player) = query.get_single_mut() else { return };
 
-	let mut player = query.single_mut();
-
-	// I am using two-thirds of the Y-velocity since I want the character to fall slower than it rises
 	let movement = time.delta().as_secs_f32() * (PLAYER_VELOCITY_Y / 1.5) * -1.0;
 
 	match player.translation {
@@ -77,11 +70,11 @@ fn movement(
 	time: Res<Time>,
 	mut query: Query<&mut KinematicCharacterController>,
 ) {
-	let mut player = query.single_mut();
+	let Ok(mut player) = query.get_single_mut() else { return };
 	let movement = time.delta_seconds() * PLAYER_VELOCITY_X * input.x();
 
 	match player.translation {
-		Some(vec) => player.translation = Some(Vec2::new(movement, vec.y)), // update if it already exists
+		Some(vec) => player.translation = Some(Vec2::new(movement, vec.y)),
 		None => player.translation = Some(Vec2::new(movement, 0.0)),
 	}
 }

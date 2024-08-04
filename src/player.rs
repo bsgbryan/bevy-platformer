@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+
 use crate::animation::AnimationTimer;
 
 #[derive(Component)]
@@ -18,16 +19,16 @@ fn update_direction(
 		&KinematicCharacterControllerOutput,
 	)>,
 ) {
-	if query.is_empty() {
-		return;
-	}
-
-	let (player, output) = query.single();
+	let Ok((player, output)) = query.get_single() else { return ;};
 
 	if output.desired_translation.x > 0.0 {
-		commands.entity(player).insert(Direction::Right);
+		commands
+			.entity(player)
+			.insert(Direction::Right);
 	} else if output.desired_translation.x < 0.0 {
-		commands.entity(player).insert(Direction::Left);
+		commands
+			.entity(player)
+			.insert(Direction::Left);
 	}
 }
 

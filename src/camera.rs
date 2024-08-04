@@ -18,13 +18,8 @@ fn follow_player(
 	player: Query<&Transform, (With<Player>, Without<Camera2d>)>,
 	time: Res<Time>,
 ) {
-	let Ok(mut camera) = camera.get_single_mut() else {
-		return;
-	};
-
-	let Ok(player) = player.get_single() else {
-		return;
-	};
+	let Ok(mut camera) = camera.get_single_mut() else { return };
+	let Ok(player) = player.get_single() else { return };
 
 	let Vec3 { x, y, .. } = player.translation;
 	let direction = Vec3::new(x, y, camera.translation.z);
