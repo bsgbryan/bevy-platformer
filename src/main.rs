@@ -9,7 +9,7 @@ use bevy_platformer::{
 	camera::CameraPlugin,
 	input::InputPlugin,
 	movement::MovementPlugin,
-	platform::PlatformPlugin,
+	level_builder::LevelBuilderPlugin,
 	player::PlayerPlugin,
 	player_animation::PlayerAnimationPlugin,
 };
@@ -40,7 +40,7 @@ fn main() {
 			CameraPlugin,
 			AnimationPlugin,
 			PlayerPlugin,
-			PlatformPlugin,
+			LevelBuilderPlugin,
 			MovementPlugin,
 			PlayerAnimationPlugin,
 		))

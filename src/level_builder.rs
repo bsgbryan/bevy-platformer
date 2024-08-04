@@ -13,7 +13,7 @@ struct WorldEdge {
 	west: f32,
 }
 
-pub struct PlatformPlugin;
+pub struct LevelBuilderPlugin;
 
 fn init(
 	mut commands: Commands,
@@ -37,23 +37,23 @@ fn genenerate_ground(
 	query: Query<&Transform, With<Player>>
 ) {
 	let Ok(transform) = query.get_single() else { return };
-	let t = transform.translation.xy();
+	let Vec3 { x, y: _, z: _ } = transform.translation;
 
-	if t.x > edge.east {
-		println!("{}, east: {}", t.x, edge.east);
+	if x > edge.east {
+		println!("{}, east: {}", x, edge.east);
 		GroundBundle::new(
 			&mut commands,
-			Vec2::new(t.x + 300., -200.),
+			Vec2::new(x + 300., -200.),
 			IVec2::new(7, 3),
 			&asset_server,
 			&mut texture_atlas_layouts,
 		);
 
-		edge.east = t.x + 448.;
+		edge.east = x + 448.;
 	}
 }
 
-impl Plugin for PlatformPlugin {
+impl Plugin for LevelBuilderPlugin {
 	fn build(&self, app: &mut App) {
 		app
 			.insert_resource(WorldEdge {
