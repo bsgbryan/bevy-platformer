@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::player::Player;
+
 #[derive(Component)]
 pub struct AnimationIndices {
 	pub first: usize,
@@ -23,12 +25,14 @@ fn animate(
 		&AnimationIndices,
 		&mut AnimationTimer,
 		&mut TextureAtlas,
-	)>,
+	), With<Player>>,
 ) {
 	for (indices, mut timer, mut atlas) in &mut query {
 		timer.tick(time.delta());
 		if timer.just_finished() {
-			atlas.index = if atlas.index == indices.last {
+			atlas.index = if atlas.index >= indices.last {
+				indices.first
+			} else if atlas.index < indices.first {
 				indices.first
 			} else {
 				atlas.index + 1
