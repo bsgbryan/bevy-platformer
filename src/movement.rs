@@ -1,8 +1,7 @@
-use bevy::{
-	app::App,
-	prelude::*,
-};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+
+use crate::input::Input;
 
 const PLAYER_VELOCITY_X: f32 = 250.0;
 const PLAYER_VELOCITY_Y: f32 = 600.0;
@@ -13,7 +12,7 @@ const MAX_JUMP_HEIGHT: f32 = 230.0;
 struct Jump(f32);
 
 fn jump(
-	input: Res<ButtonInput<KeyCode>>,
+	input: Res<Input>,
 	mut commands: Commands,
 	query: Query<
 		(Entity, &KinematicCharacterControllerOutput),
@@ -26,7 +25,7 @@ fn jump(
 
 	let (player, output) = query.single();
 
-	if input.just_pressed(KeyCode::Space) && output.grounded {
+	if input.is_jumping() && output.grounded {
 		commands.entity(player).insert(Jump(0.0));
 	}
 }
@@ -74,21 +73,12 @@ fn fall(time: Res<Time>, mut query: Query<&mut KinematicCharacterController, Wit
 }
 
 fn movement(
-	input: Res<ButtonInput<KeyCode>>,
+	input: Res<Input>,
 	time: Res<Time>,
 	mut query: Query<&mut KinematicCharacterController>,
 ) {
 	let mut player = query.single_mut();
-
-	let mut movement = 0.0;
-
-	if input.pressed(KeyCode::ArrowRight) || input.pressed(KeyCode::KeyD) {
-		movement += time.delta_seconds() * PLAYER_VELOCITY_X;
-	}
-
-	if input.pressed(KeyCode::ArrowLeft) || input.pressed(KeyCode::KeyA) {
-		movement += time.delta_seconds() * PLAYER_VELOCITY_X * -1.0;
-	}
+	let movement = time.delta_seconds() * PLAYER_VELOCITY_X * input.x();
 
 	match player.translation {
 		Some(vec) => player.translation = Some(Vec2::new(movement, vec.y)), // update if it already exists
@@ -96,7 +86,7 @@ fn movement(
 	}
 }
 
-pub  struct MovementPlugin;
+pub struct MovementPlugin;
 
 impl Plugin for MovementPlugin {
 	fn build(&self, app: &mut App) {

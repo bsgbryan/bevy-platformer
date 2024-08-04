@@ -8,6 +8,7 @@ use bevy_platformer::{
 	// hello::HelloPlugin,
 	animation::AnimationPlugin,
 	camera::CameraPlugin,
+	input::InputPlugin,
 	movement::MovementPlugin,
 	platform::PlatformPlugin,
 	player::PlayerPlugin,
@@ -37,6 +38,7 @@ fn main() {
 				})
 				.set(ImagePlugin::default_nearest()),
 			// HelloPlugin,
+			InputPlugin,
 			RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(16.0), // Physics plugin
 			RapierDebugRenderPlugin::default(), // Debug plugin
 			CameraPlugin,
