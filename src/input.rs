@@ -82,16 +82,17 @@ fn gamepad_input_events(
 					if axis.axis_type == GamepadAxisType::LeftStickX { input.x = axis.value; }
 				}
 				GamepadEvent::Button(btn) => {
-					// The "value" of a button is typically `0.0` or `1.0`, but it
-					// is a `f32` because some gamepads may have buttons that are
-					// pressure-sensitive or otherwise analog somehow.
 					if btn.button_type == GamepadButtonType::South && btn.value > 0. {
 						if !input.is_jumping() { input.jump = PressState::JustPressed; }
-						else { input.jump = PressState::HeldDown; }
-					} else if btn.button_type == GamepadButtonType::South && btn.value == 0. {
-						if input.is_jumping() { input.jump = PressState::Released; }
-						else { input.jump = PressState::Unpressed; }
+						else                   { input.jump = PressState::HeldDown;    }
 					}
+					else if btn.button_type == GamepadButtonType::South && btn.value == 0. {
+						if input.is_jumping() { input.jump = PressState::Released;  }
+						else                  { input.jump = PressState::Unpressed; }
+					}
+
+					if      btn.button_type == GamepadButtonType::DPadLeft  { input.x = -btn.value; }
+					else if btn.button_type == GamepadButtonType::DPadRight { input.x =  btn.value; }
 				}
 				_ => ()
 			}
