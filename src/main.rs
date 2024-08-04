@@ -20,8 +20,6 @@ const WINDOW_WIDTH: f32 = 1024.0;
 const WINDOW_HEIGHT: f32 = 720.0;
 
 fn main() {
-	println!("Test: {}", 1 / 2);
-
 	App::new()
 		.insert_resource(ClearColor(COLOR_BACKGROUND))
 		.add_plugins((
