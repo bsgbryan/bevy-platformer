@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use bevy_rand::prelude::*;
+use rand_core::RngCore;
 
 use crate::surfaces::ground::GroundBundle;
 
@@ -42,6 +44,7 @@ impl Default for ScreenEdge {
 	}
 }
 
+const MIN_SIZE: u8 = 2;
 
 pub struct LevelBuilderPlugin;
 
@@ -55,8 +58,6 @@ fn init(
 	let Ok(window) = window.get_single() else { return };
 	let width = ((window.size().x / GRID_CELL_SIZE as f32).floor() * 0.5).floor() as i32;
 	let half_width = width as f32 * 0.5;
-
-	println!("{}  {}", width, half_width);
 
 	world_edge.east =  half_width * GRID_CELL_SIZE as f32;
 	world_edge.west = -half_width * GRID_CELL_SIZE as f32;
@@ -75,29 +76,50 @@ fn genenerate_ground(
 	asset_server: Res<AssetServer>,
 	mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 	mut world_edge: ResMut<WorldEdge>,
+	mut rng: ResMut<GlobalEntropy<WyRand>>,
 	screen_edge: Res<ScreenEdge>,
 	window: Query<&Window>,
 ) {
 	let Ok(window) = window.get_single() else { return };
 
-	let height:u8 = 3;
-	let width: u16 = 7;
-	let size = GRID_CELL_SIZE as f32 * width as f32;
-
 	if world_edge.east - screen_edge.east < window.size().x * 0.5 {
-		println!("Rendering surface {}", world_edge.east);
+		let rand_height   =  rng.next_u32() as f32 / u32::MAX as f32;
+		let rand_width    =  rng.next_u32() as f32 / u32::MAX as f32;
+		let rand_y_offset = (rng.next_u32() as f32 / u32::MAX as f32) - 0.5;
+		let rand_gap      =  rng.next_u32() as f32 / u32::MAX as f32;
+
+		let height: u8 = {
+			let w = (5. * rand_height).floor() as u8;
+
+			if w < MIN_SIZE { MIN_SIZE }
+			else { w }
+		};
+		let width: u16 = {
+			let w = (7. * rand_width).floor() as u16;
+
+			if w < MIN_SIZE as u16 { MIN_SIZE as u16 }
+			else { w }
+		};
+
+		let size: f32     = GRID_CELL_SIZE as f32 * width as f32;
+		let y_offset: i16 = ((3. * rand_y_offset).floor() as i16) * GRID_CELL_SIZE as i16;
+		let gap: u8       = (2. * rand_gap).floor() as u8 * GRID_CELL_SIZE;
+
 		GroundBundle::new(
 			&mut commands,
 			Vec2::new(
-				world_edge.east + (size * 0.5),
-				-(GRID_CELL_SIZE as f32 + (GRID_CELL_SIZE as f32 * (height as f32 * 0.5)))
+				world_edge.east + (GRID_CELL_SIZE as f32 * 0.5) + (size * 0.5) + gap as f32,
+				-(GRID_CELL_SIZE as f32 + (GRID_CELL_SIZE as f32 * (height as f32 * 0.5))) + y_offset as f32,
 			),
-			IVec2::new(width as i32, height as i32),
+			IVec2::new(
+				width as i32,
+				height as i32,
+			),
 			&asset_server,
 			&mut texture_atlas_layouts,
 		);
 
-		world_edge.east += size;
+		world_edge.east += size + (GRID_CELL_SIZE as f32 * 0.5) + gap as f32;
 	}
 }
 

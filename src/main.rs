@@ -2,6 +2,7 @@ use bevy::{
 	prelude::*,
 	window::WindowResolution,
 };
+use bevy_rand::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 use bevy_platformer::{
@@ -34,9 +35,10 @@ fn main() {
 					..Default::default()
 				})
 				.set(ImagePlugin::default_nearest()),
+			EntropyPlugin::<WyRand>::default(),
 			InputPlugin,
 			RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(16.0), // Physics plugin
-			RapierDebugRenderPlugin::default(), // Debug plugin
+			// RapierDebugRenderPlugin::default(), // Debug plugin
 			CameraPlugin,
 			AnimationPlugin,
 			PlayerPlugin,

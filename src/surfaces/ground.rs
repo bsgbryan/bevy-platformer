@@ -80,8 +80,8 @@ impl GroundBundle {
 					..Default::default()
 				}),
 				Collider::round_cuboid(
-					size.x as f32 * SCALE * 0.5 - 4. - 32.,
-					size.y as f32 * SCALE * 0.5 - 4. - 32.,
+					size.x as f32 * SCALE * 0.5 - 6. - 32.,
+					size.y as f32 * SCALE * 0.5 - 6. - 32.,
 					32.
 				),
 			))
