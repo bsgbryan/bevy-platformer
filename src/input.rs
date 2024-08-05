@@ -3,6 +3,10 @@ use bevy::input::gamepad::{
 	GamepadEvent,
 };
 use bevy::prelude::*;
+use bevy::window::{
+	CursorGrabMode,
+	PrimaryWindow,
+};
 
 pub enum PressState {
 	Unpressed,
@@ -36,6 +40,18 @@ impl Input {
 }
 
 pub struct InputPlugin;
+
+fn cursor_grab(
+	mut q_windows: Query<
+		&mut Window,
+		With<PrimaryWindow>,
+	>,
+) {
+	let Ok(mut primary_window) = q_windows.get_single_mut() else { return };
+
+	primary_window.cursor.grab_mode = CursorGrabMode::Locked;
+	primary_window.cursor.visible = false;
+}
 
 fn keyboard_input_event(
 	keyboard: Res<ButtonInput<KeyCode>>,
@@ -108,6 +124,7 @@ impl Plugin for InputPlugin {
 				mode: InputMode::Unknown,
 				x: 0.,
 			})
+			.add_systems(Startup, cursor_grab)
 			.add_systems(Update, gamepad_connections)
 			.add_systems(Update, gamepad_input_events)
 			.add_systems(Update, keyboard_input_event);
