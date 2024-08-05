@@ -46,7 +46,7 @@ fn init(
 			Player,
 			SpriteBundle {
 				transform: Transform {
-					translation: Vec3::new(0.0, 60.0, 0.0),
+					translation: Vec3::new(0.0, 0.0, 0.0),
 					scale: Vec3::new(4.0, 4.0, 1.0),
 					..Default::default()
 				},
