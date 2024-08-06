@@ -3,13 +3,15 @@ use bevy_rapier2d::prelude::*;
 
 use crate::input::Input;
 
-const PLAYER_VELOCITY_X: f32 = 250.0;
-const PLAYER_VELOCITY_Y: f32 = 600.0;
+const PLAYER_VELOCITY_X: f32 = 250.;
+const PLAYER_VELOCITY_Y: f32 = 250.;
 
-const MAX_JUMP_HEIGHT: f32 = 230.0;
+const MAX_JUMP_HEIGHT: f32 = 128.;
+const JUMP_LERP_FACTOR: f32 = 8.;
+const MIN_JUMP_MOVE: f32 = 0.33;
 
 #[derive(Component)]
-struct Jump(f32);
+struct Jump(f32, f32);
 
 fn jump(
 	input: Res<Input>,
@@ -24,7 +26,7 @@ fn jump(
 	if input.is_jumping() && output.grounded {
 		commands
 			.entity(player)
-			.insert(Jump(0.0));
+			.insert(Jump(0.0, output.effective_translation.y));
 	}
 }
 
@@ -37,31 +39,53 @@ fn rise(
 		&mut Jump,
 	)>,
 ) {
-	let Ok((entity, mut player, mut jump)) = query.get_single_mut() else { return };
+	let Ok((entity, mut player, mut jump)) = query.
+		get_single_mut() else { return };
 
-	let mut movement = time.delta().as_secs_f32() * PLAYER_VELOCITY_Y;
+	let movement = {
+		if jump.0 >= MAX_JUMP_HEIGHT {
+			commands.entity(entity).remove::<Jump>();
 
-	if movement + jump.0 >= MAX_JUMP_HEIGHT {
-		movement = MAX_JUMP_HEIGHT - jump.0;
-		commands.entity(entity).remove::<Jump>();
-	}
+			MAX_JUMP_HEIGHT - jump.0
+		}
+		else {
+			let foo = {
+				if jump.0 < MAX_JUMP_HEIGHT * 0.75 { 1. }
+				else { 1. + (2.000001 - (MAX_JUMP_HEIGHT / jump.0)) }
+			};
 
-	jump.0 += movement;
+			let m = jump.0.lerp(
+				jump.1 + MAX_JUMP_HEIGHT,
+				time.delta_seconds() * JUMP_LERP_FACTOR * foo,
+			) - jump.0;
+
+			if m < MIN_JUMP_MOVE { MIN_JUMP_MOVE }
+			else                 { m }
+		}
+	};
+
+	if movement == 0. { commands.entity(entity).remove::<Jump>(); }
+	else              { jump.0 += movement; }
 
 	match player.translation {
 		Some(vec) => player.translation = Some(Vec2::new(vec.x, movement)),
-		None => player.translation = Some(Vec2::new(0.0, movement)),
+		None            => player.translation = Some(Vec2::new(0., movement)),
 	}
 }
 
-fn fall(time: Res<Time>, mut query: Query<&mut KinematicCharacterController, Without<Jump>>) {
+fn fall(
+	time: Res<Time>,
+	mut query: Query<
+		&mut KinematicCharacterController,
+		Without<Jump>,
+	>,
+) {
 	let Ok(mut player) = query.get_single_mut() else { return };
-
 	let movement = time.delta().as_secs_f32() * (PLAYER_VELOCITY_Y / 1.5) * -1.0;
 
 	match player.translation {
 		Some(vec) => player.translation = Some(Vec2::new(vec.x, movement)),
-		None => player.translation = Some(Vec2::new(0.0, movement)),
+		None            => player.translation = Some(Vec2::new(0., movement)),
 	}
 }
 
