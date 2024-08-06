@@ -31,7 +31,7 @@ fn follow_player(
 	let Ok(window)           = window.get_single()     else { return };
 
 	let Vec3 { x, y, .. } = player.translation;
-	let direction = Vec3::new(x, y, camera.translation.z);
+	let target = Vec3::new(x, y, camera.translation.z);
 
 	// Applies a smooth effect to camera movement using interpolation between
 	// the camera position and the player position on the x and y axes.
@@ -40,7 +40,7 @@ fn follow_player(
 	// the player.
 	camera.translation = camera
 		.translation
-		.lerp(direction, time.delta_seconds() * CAM_LERP_FACTOR);
+		.lerp(target, time.delta_seconds() * CAM_LERP_FACTOR);
 
 	let half_width  = window.size().x * 0.5;
 	let half_height = window.size().y * 0.5;
