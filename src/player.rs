@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::animation::AnimationTimer;
+use crate::{
+	animation::AnimationTimer,
+	movement::DownForce,
+};
 
 #[derive(Component)]
 pub struct Player;
@@ -62,10 +65,14 @@ fn init(
 				index: 301,
 			},
 			AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+			DownForce(2.5, 0., 0),
 		))
 		.insert(RigidBody::KinematicPositionBased)
 		.insert(Collider::round_cuboid(2.25, 3.25, 8.))
-		.insert(KinematicCharacterController::default())
+		.insert(KinematicCharacterController {
+			snap_to_ground: Some(CharacterLength::Relative(1.)),
+			..default()
+		})
 		.insert(Direction::Right);
 }
 

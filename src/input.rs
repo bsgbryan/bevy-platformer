@@ -8,6 +8,7 @@ use bevy::window::{
 	PrimaryWindow,
 };
 
+#[derive(Eq, PartialEq)]
 pub enum PressState {
 	Unpressed,
 	JustPressed,
@@ -31,11 +32,15 @@ pub struct Input {
 
 impl Input {
 	pub fn x(&self) -> f32 { self.x }
-	pub fn is_jumping(&self) -> bool {
-		match self.jump {
-			PressState::JustPressed | PressState::HeldDown => true,
-			PressState::Unpressed   | PressState::Released => false,
-		}
+	pub fn is_jumping(&mut self) -> bool {
+		let jumping = match &self.jump {
+			PressState::JustPressed => true,
+			_                       => false,
+		};
+
+		self.jump = PressState::Unpressed;
+
+		jumping
 	}
 }
 
