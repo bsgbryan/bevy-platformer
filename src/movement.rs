@@ -95,7 +95,7 @@ fn gravity(
 	let factor = {
 		let suspend_gravity = df.2 < 2 || output.desired_translation.y > 0.;
 		if suspend_gravity { 0.00001 }
-		else         { df.0    }
+		else         			 { df.0    }
 	};
 
 	let movement = df.1.lerp(factor, time.delta_seconds() * JUMP_LERP_FACTOR);
