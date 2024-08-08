@@ -3,11 +3,10 @@ use bevy_rapier2d::prelude::*;
 
 use crate::input::Input;
 
-const PLAYER_VELOCITY_X: f32 = 250.;
-
-const MAX_JUMP_HEIGHT: f32 = 128.;
-const JUMP_LERP_FACTOR: f32 = 8.;
-const MIN_JUMP_MOVE: f32 = 0.33;
+const PLAYER_VELOCITY_X: f32 = 250.	 ;
+const MAX_JUMP_HEIGHT:	 f32 = 128.	 ;
+const JUMP_LERP_FACTOR:	 f32 = 	 8.	 ;
+const MIN_JUMP_MOVE:		 f32 = 	 0.33;
 
 #[derive(Component)]
 struct Jump(f32, f32);
@@ -59,8 +58,9 @@ fn rise(
 		}
 		else {
 			let foo = {
-				if jump.0 < MAX_JUMP_HEIGHT * 0.75 { 1. }
-				else { 1. + (2.000001 - (MAX_JUMP_HEIGHT / jump.0)) }
+				let before_apex = jump.0 < MAX_JUMP_HEIGHT * 0.75;
+				if before_apex { 1. 																					}
+				else 					 { 1. + (2.000001 - (MAX_JUMP_HEIGHT / jump.0)) }
 			};
 
 			let m = jump.0.lerp(
@@ -69,16 +69,16 @@ fn rise(
 			) - jump.0;
 
 			if m < MIN_JUMP_MOVE { MIN_JUMP_MOVE }
-			else                 { m }
+			else                 { m 						 }
 		}
 	};
 
 	if movement == 0. { commands.entity(entity).remove::<Jump>(); }
-	else              { jump.0 += movement; df.1 = 0.; }
+	else              { jump.0 += movement; df.1 = 0.; 						}
 
 	match player.translation {
 		Some(vec) => player.translation = Some(Vec2::new(vec.x, movement)),
-		None            => player.translation = Some(Vec2::new(0., movement)),
+		None      => player.translation = Some(Vec2::new(0., 		movement)),
 	}
 }
 
@@ -123,7 +123,7 @@ fn movement(
 
 	match player.translation {
 		Some(vec) => player.translation = Some(Vec2::new(movement, vec.y)),
-		None => player.translation = Some(Vec2::new(movement, 0.0)),
+		None 			=> player.translation = Some(Vec2::new(movement, 0.0)),
 	}
 }
 
