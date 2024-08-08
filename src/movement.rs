@@ -1,10 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::{
-	input::Input,
-	player::Player,
-};
+use crate::input::Input;
 
 const PLAYER_VELOCITY_X: f32 = 250.;
 
@@ -96,8 +93,8 @@ fn gravity(
 	let Ok((mut player, output, mut df)) = query.get_single_mut() else { return };
 
 	let factor = {
-		let on_ground = df.2 < 2 || output.desired_translation.y > 0.;
-		if on_ground { 0.00001 }
+		let suspend_gravity = df.2 < 2 || output.desired_translation.y > 0.;
+		if suspend_gravity { 0.00001 }
 		else         { df.0    }
 	};
 
