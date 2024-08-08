@@ -9,7 +9,7 @@ pub struct GroundBundle {
 	collider: Collider,
 }
 
-const SCALE: f32 = 16. * 4.;
+pub const SCALE: f32 = 16. * 4.;
 
 impl GroundBundle {
 	pub fn new(
@@ -90,5 +90,22 @@ impl GroundBundle {
 					parent.spawn(s);
 				}
 			});
+
+		// commands.spawn((
+		// 	SpatialBundle::from_transform(
+		// 		Transform {
+		// 			translation: Vec3::new(
+		// 				position.x,
+		// 				position.y - size.y as f32 * 0.5 * SCALE - 5. * SCALE,
+		// 				0.,
+		// 			),
+		// 			..Default::default()
+		// 		},
+		// 	),
+		// 	Collider::cuboid(
+		// 		size.x as f32 * SCALE * 0.5,
+		// 		10.						* SCALE * 0.5,
+		// 	),
+		// ));
 	}
 }

@@ -38,7 +38,7 @@ fn main() {
 			EntropyPlugin::<WyRand>::default(),
 			InputPlugin,
 			RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(16.0), // Physics plugin
-			// RapierDebugRenderPlugin::default(), // Debug plugin
+			RapierDebugRenderPlugin::default(), // Debug plugin
 			CameraPlugin,
 			AnimationPlugin,
 			PlayerPlugin,
