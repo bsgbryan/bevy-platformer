@@ -92,25 +92,25 @@ fn gravity(
 ) {
 	let Ok((mut player, output, mut df)) = query.get_single_mut() else { return };
 
-	let factor = {
-		let suspend_gravity = df.2 < 2 || output.desired_translation.y > 0.;
-		if suspend_gravity { 0.00001 }
-		else         			 { df.0    }
-	};
+	if let Some(t) = player.translation {
+		let suspend_gravity = output.grounded || t.xy().y > 0.;
+		let factor = {
+			if suspend_gravity { 0.00001 }
+			else         			 { df.0    }
+		};
 
-	let movement = df.1.lerp(factor, time.delta_seconds() * JUMP_LERP_FACTOR);
+		let movement = df.1.lerp(factor, time.delta_seconds() * JUMP_LERP_FACTOR);
 
-	df.1 = movement;
+		df.1 = movement;
 
-	match player.translation {
-		Some(vec) => player.translation = Some(Vec2::new(vec.x, -movement)),
-		None            => player.translation = Some(Vec2::new(0., -movement)),
+		match player.translation {
+			Some(vec) => player.translation = Some(Vec2::new(vec.x, t.xy().y + -movement)),
+			None      => player.translation = Some(Vec2::new(0., 		t.xy().y + -movement)),
+		}
 	}
 
-	if !output.grounded {
-		if let Some(v) = df.2.checked_add(1) { df.2 = v; }
-	}
-	else { df.2 = 0; }
+	if !output.grounded { if let Some(v) = df.2.checked_add(1) { df.2 = v; } }
+	else 								{ df.2 = 0; 																				 }
 }
 
 fn movement(

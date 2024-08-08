@@ -71,6 +71,8 @@ fn init(
 		.insert(Collider::round_cuboid(2.25, 3.25, 8.))
 		.insert(KinematicCharacterController {
 			snap_to_ground: Some(CharacterLength::Relative(1.)),
+			max_slope_climb_angle: 45f32.to_radians(),
+			min_slope_slide_angle: 30f32.to_radians(),
 			..default()
 		})
 		.insert(Direction::Right);
