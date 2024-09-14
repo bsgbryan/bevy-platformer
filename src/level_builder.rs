@@ -135,10 +135,15 @@ fn genenerate_ground(
 					},
 				),
 				Collider::cuboid(
-					half_gap + half_kill_zone_x,
+					(half_gap + half_kill_zone_x) - 1.,
 					5. * half_grid_cell,
 				),
-			));
+			))
+			.insert(RigidBody::Fixed)
+			.insert(Sensor)
+			.insert(CollisionGroups::new(Group::GROUP_3, Group::GROUP_1))
+			.insert(ActiveCollisionTypes::all())
+			.insert(ActiveEvents::COLLISION_EVENTS);
 		}
 
 		GroundBundle::new(

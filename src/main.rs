@@ -8,6 +8,7 @@ use bevy_rapier2d::prelude::*;
 use bevy_platformer::{
 	animation::AnimationPlugin,
 	camera::CameraPlugin,
+	collisions::CollisionPlugin,
 	input::InputPlugin,
 	movement::MovementPlugin,
 	level_builder::LevelBuilderPlugin,
@@ -45,6 +46,7 @@ fn main() {
 			LevelBuilderPlugin,
 			MovementPlugin,
 			PlayerAnimationPlugin,
+			CollisionPlugin,
 		))
 		.run();
 }
